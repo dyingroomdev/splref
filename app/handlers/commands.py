@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta, timezone
 from html import escape
 from typing import Dict, List, Optional, Sequence, Tuple
@@ -23,6 +24,7 @@ from ..services import (
 from ..utils import extract_link_code
 
 router = Router(name="commands")
+logger = logging.getLogger(__name__)
 
 
 RATE_LIMITED_COMMANDS = {"ping", "mylink", "deactivate", "reactivate", "mystats", "top"}
@@ -89,6 +91,20 @@ async def handle_ping(message: Message) -> None:
         await message.answer("Too many requests. Please try again shortly.")
         return
     await message.answer("pong")
+
+
+@router.message()
+async def log_unhandled_message(message: Message) -> None:
+    logger.info(
+        "Message received with no command handler",
+        extra={
+            "text": message.text,
+            "chat_id": message.chat.id if message.chat else None,
+            "chat_type": getattr(message.chat, "type", None),
+            "from_user": message.from_user.id if message.from_user else None,
+            "entities": [entity.type for entity in (message.entities or [])],
+        },
+    )
 
 
 
