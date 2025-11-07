@@ -91,6 +91,8 @@ async def handle_ping(message: Message) -> None:
     await message.answer("pong")
 
 
+
+
 @router.message(Command("mylink"), F.chat.type == ChatType.PRIVATE)
 async def handle_my_link(message: Message) -> None:
     if not _rate_limit(message, "mylink"):
