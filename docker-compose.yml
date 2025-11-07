@@ -8,6 +8,8 @@ services:
       DATABASE_URL: ${DATABASE_URL:-sqlite:////app/data/affiliate.db}
     volumes:
       - sqlite_data:/app/data
+    ports:
+      - "8081:8081"
     restart: unless-stopped
 
   # postgres:
